@@ -23,7 +23,20 @@ jobs:
           username: azureuser
           password: ${{ secrets.VM_PASSWORD }}
           script: |
+            # 1. Create a folder for our project on the server
+            mkdir -p ~/my-app
+            cd ~/my-app
+
+            # 2. Download your latest code from GitHub to the server
+            sudo wget -O index.html https://raw.githubusercontent.com/${{ github.repository }}/main/index.html
+            sudo wget -O Dockerfile https://raw.githubusercontent.com/${{ github.repository }}/main/Dockerfile
+
+            # 3. Stop and Remove the old "Welcome" container
             sudo docker stop devops-container || true
             sudo docker rm devops-container || true
-            sudo docker pull nginx:alpine
-            sudo docker run -d -p 80:80 --name devops-container nginx:alpine
+
+            # 4. Build YOUR custom image using the Dockerfile
+            sudo docker build -t my-custom-site .
+
+            # 5. Run YOUR custom image
+            sudo docker run -d -p 80:80 --name devops-container my-custom-site
