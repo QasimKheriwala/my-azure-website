@@ -1,0 +1,29 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to VM via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.20.244.127.140 }}
+          username: azureuser
+          password: ${{ secrets.DevOpsStudent@2026 }}
+          script: |
+            sudo docker stop devops-container || true
+            sudo docker rm devops-container || true
+            sudo docker pull nginx:alpine
+            sudo docker run -d -p 80:80 --name devops-container nginx:alpine
