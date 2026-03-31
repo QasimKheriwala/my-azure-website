@@ -19,9 +19,9 @@ jobs:
       - name: Deploy to VM via SSH
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.20.244.127.140 }}
+          host: ${{ secrets.VM_IP }}
           username: azureuser
-          password: ${{ secrets.DevOpsStudent@2026 }}
+          password: ${{ secrets.VM_PASSWORD }}
           script: |
             sudo docker stop devops-container || true
             sudo docker rm devops-container || true
